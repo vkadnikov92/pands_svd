@@ -5,19 +5,16 @@ import matplotlib.pyplot as plt
 
 st.write("### Quick app for visualization of SVD process")
 st.write("")
-st.write("")
-st.write("")
-st.write("")
 
 img = plt.imread('panda.JPG')
 
 
 st.sidebar.header('Input Parameters')
-st.sidebar.write(f'Choose K for SVD, any number from 1 to 100, for example "20"')
+st.sidebar.write(f'Choose K for SVD, any number from 1 to 100')
 st.write("")
 st.write("")
 st.write("")
-k = st.sidebar.slider('k parameter for SVD', 0, 100, 0)
+k = st.sidebar.slider('Parameter for SVD', 0, 100, 2)
 # k = st.sidebar.slider('k parameter for SVD', min_value=1, max_value=100)
 
 img = plt.imread('panda.JPG')
