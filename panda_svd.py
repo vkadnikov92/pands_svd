@@ -24,11 +24,13 @@ k = st.sidebar.slider('Parameter for SVD', 0, 100, 2)
 if uploaded_file is not None:
     # Отображение изображения
     img = Image.open(uploaded_file)
+    if np.array(img).shape[-1] == 3:  # Проверка, является ли изображение RGB
+        img = np.array(img)[:, :, 0]
 else:
     img = plt.imread('panda.JPG')
 
-img = img[:, :, 0]
-img = img/255
+img = np.array(img, dtype=np.float32) / 255  # Преобразование и нормализация изображения
+
 U, sing_vals, V = np.linalg.svd(img)
 sigma = np.zeros(shape=(U.shape[0], V.shape[0]))
 np.fill_diagonal(sigma, sing_vals)
