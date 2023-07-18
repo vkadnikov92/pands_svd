@@ -10,14 +10,21 @@ img = plt.imread('panda.JPG')
 
 
 st.sidebar.header('Input Parameters')
+st.write("")
+uploaded_file = st.file_uploader("Загрузите вашу фотографию", type=["jpg", "jpeg", "png"])
+
 st.sidebar.write(f'Choose K for SVD, any number from 1 to 100')
 st.write("")
 st.write("")
 st.write("")
 k = st.sidebar.slider('Parameter for SVD', 0, 100, 2)
-# k = st.sidebar.slider('k parameter for SVD', min_value=1, max_value=100)
 
-img = plt.imread('panda.JPG')
+
+if uploaded_file is not None:
+    # Отображение изображения
+    img = uploaded_file
+else:
+    img = plt.imread('panda.JPG')
 img = img[:, :, 0]
 img = img/255
 U, sing_vals, V = np.linalg.svd(img)
