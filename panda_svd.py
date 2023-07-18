@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image
 
 
 st.write("### Quick app for visualization of SVD process")
@@ -22,9 +23,10 @@ k = st.sidebar.slider('Parameter for SVD', 0, 100, 2)
 
 if uploaded_file is not None:
     # Отображение изображения
-    img = uploaded_file
+    img = Image.open(uploaded_file)
 else:
     img = plt.imread('panda.JPG')
+
 img = img[:, :, 0]
 img = img/255
 U, sing_vals, V = np.linalg.svd(img)
