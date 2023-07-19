@@ -29,7 +29,7 @@ def compute_svd(image, k):
 
 
 def main():
-    st.title("### Quick app for visualization of SVD process")
+    st.title("Quick app for visualization of SVD process")
     uploaded_file = st.file_uploader("upload your image", type=["jpg", "jpeg", "png"])  
     
     st.sidebar.header('Input Parameters')
@@ -45,6 +45,8 @@ def main():
         # st.image(image, caption='Оригинальное изображение.', use_column_width=True)
 
         trunc_img = compute_svd(img_array, k)
+        st.write('###### Guese WHO?')
+        st.write("")
         st.image(trunc_img, caption=f'Image decomposition with {k} singular numbers.', use_column_width=True)
 
 if __name__ == "__main__":
