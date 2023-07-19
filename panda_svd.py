@@ -1,49 +1,51 @@
-import streamlit as st
 import numpy as np
-import matplotlib.pyplot as plt
+import streamlit as st
 from PIL import Image
+from matplotlib import pyplot as plt
 
 
-st.write("### Quick app for visualization of SVD process")
-st.write("")
+def compute_svd(image, k):
+    """Выполняет сингулярное разложение (SVD) и возвращает сжатое изображение"""
+    img = np.array(image)
+    img = img / 255  # Нормализуем значения изображения
+    U, sing_vals, V = np.linalg.svd(img)  # Выполняем сингулярное разложение
 
-img = plt.imread('panda.JPG')
+    # Создаём двумерный массив sigma
+    sigma = np.zeros((U.shape[0], V.shape[0]))
+    np.fill_diagonal(sigma, sing_vals)  # Заполняем диагональные элементы матрицы sigma
+
+    # Оставляем только топ-K сингулярных чисел
+    trunc_U = U[:, :k]
+    trunc_sigma = sigma[:k, :k]
+    trunc_V = V[:k, :]
+
+    trunc_img = trunc_U @ trunc_sigma @ trunc_V  # Получаем сжатое изображение
+
+    # Нормализуем данные изображения
+    trunc_img = trunc_img - np.min(trunc_img)
+    trunc_img = trunc_img / np.max(trunc_img)
+
+    return trunc_img
 
 
-st.sidebar.header('Input Parameters')
-st.write("")
-uploaded_file = st.file_uploader("Загрузите вашу фотографию", type=["jpg", "jpeg", "png"])
+def main():
+    st.title("### Quick app for visualization of SVD process")
+    uploaded_file = st.file_uploader("upload your image", type=["jpg", "jpeg", "png"])  
+    
+    st.sidebar.header('Input Parameters')
+    st.write("")
+    
 
-st.sidebar.write(f'Choose K for SVD, any number from 1 to 100')
-st.write("")
-st.write("")
-st.write("")
-k = st.sidebar.slider('Parameter for SVD', 0, 100, 2)
+    # k = st.slider('Количество сингулярных чисел', min_value=1, max_value=min(img_array.shape), value=5)
+    k = st.sidebar.slider('Parameter for SVD', 0, 100, value=2)
+    
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        img_array = np.array(image.convert('L'))  # Переводим изображение в оттенки серого
+        # st.image(image, caption='Оригинальное изображение.', use_column_width=True)
 
+        trunc_img = compute_svd(img_array, k)
+        st.image(trunc_img, caption=f'Image decomposition with {k} singular numbers.', use_column_width=True)
 
-if uploaded_file is not None:
-    # Отображение изображения
-    img = Image.open(uploaded_file)
-else:
-    img = plt.imread('panda.JPG')
-
-# img = np.array(img)[:, :, 0]
-img = np.array(img, dtype=np.float32) / 255  # Преобразование и нормализация изображения
-
-U, sing_vals, V = np.linalg.svd(img)
-sigma = np.zeros(shape=(U.shape[0], V.shape[0]))
-np.fill_diagonal(sigma, sing_vals)
-
-top_k = k
-
-trunc_U = U[:, :top_k]
-trunc_sigma = sigma[:top_k, :top_k]
-trunc_V = V[:top_k, :]
-
-trunc_img = trunc_U@trunc_sigma@trunc_V
-
-st.write('###### Guese WHO?')
-st.write("")
-
-# Отображение изображения в Matplotlib
-st.image(trunc_img, clamp=True)
+if __name__ == "__main__":
+    main()
